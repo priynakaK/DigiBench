@@ -49,8 +49,8 @@
 
             var backgroundCanvas = document.getElementById('backgroundCanvas');
             var backgroundContext = backgroundCanvas.getContext('2d');
-            var lineSpacing = 20;
-            backgroundContext.strokeStyle = '#ccc'; // Line color
+            var lineSpacing = 40; // Increased distance between lines
+            backgroundContext.strokeStyle = '#000'; // Changed line color to black
             for (var y = lineSpacing; y < backgroundCanvas.height; y += lineSpacing) {
                 backgroundContext.beginPath();
                 backgroundContext.moveTo(0, y);
