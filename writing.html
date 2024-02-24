@@ -5,40 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Whiteboard</title>
 <style>
-    #whiteboardContainer {
-        position: relative;
-    }
-
     #whiteboard {
-        position: absolute;
-        top: 0;
-        left: 0;
         border: 2px solid black;
         cursor: crosshair;
-    }
-
-    #backgroundCanvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        pointer-events: none; /* Make background canvas not receive mouse events */
-    }
-
-    .button-container {
-        margin-top: 10px;
     }
 </style>
 </head>
 <body>
-    <div id="whiteboardContainer">
-        <canvas id="backgroundCanvas" width="800" height="600"></canvas>
-        <canvas id="whiteboard" width="800" height="600"></canvas>
-    </div>
-    <div class="button-container">
-        <button onclick="selectPen()">Pen</button>
-        <button onclick="selectEraser()">Eraser</button>
-        <button onclick="saveDrawing()">Save</button>
-    </div>
+    <canvas id="whiteboard" width="800" height="600"></canvas>
+    <button onclick="selectPen()">Pen</button>
+    <button onclick="selectEraser()">Eraser</button>
+    <button onclick="saveDrawing()">Save</button>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -47,16 +24,14 @@
             var isDrawing = false;
             var penSelected = true;
 
-            // Draw lined background on separate canvas
-            var backgroundCanvas = document.getElementById('backgroundCanvas');
-            var backgroundContext = backgroundCanvas.getContext('2d');
+            // Draw lined background
             var lineSpacing = 20;
-            backgroundContext.strokeStyle = '#ccc'; // Line color
-            for (var y = lineSpacing; y < backgroundCanvas.height; y += lineSpacing) {
-                backgroundContext.beginPath();
-                backgroundContext.moveTo(0, y);
-                backgroundContext.lineTo(backgroundCanvas.width, y);
-                backgroundContext.stroke();
+            context.strokeStyle = '#ccc'; // Line color
+            for (var y = lineSpacing; y < canvas.height; y += lineSpacing) {
+                context.beginPath();
+                context.moveTo(0, y);
+                context.lineTo(canvas.width, y);
+                context.stroke();
             }
 
             canvas.addEventListener('mousedown', startDrawing);
