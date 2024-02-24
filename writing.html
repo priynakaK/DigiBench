@@ -37,6 +37,7 @@
     <div class="button-container">
         <button onclick="selectPen()">Pen</button>
         <button onclick="selectEraser()">Eraser</button>
+        <button onclick="clearCanvas()">Clear</button>
         <button onclick="saveDrawing()">Save</button>
     </div>
 
@@ -112,6 +113,10 @@
 
             window.selectEraser = function () {
                 penSelected = false;
+            }
+
+            window.clearCanvas = function () {
+                penContext.clearRect(0, 0, penCanvas.width, penCanvas.height);
             }
 
             window.saveDrawing = function () {
