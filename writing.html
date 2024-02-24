@@ -24,6 +24,16 @@
             var isDrawing = false;
             var penSelected = true;
 
+            // Draw lined background
+            var lineSpacing = 20;
+            context.strokeStyle = '#ccc'; // Line color
+            for (var y = lineSpacing; y < canvas.height; y += lineSpacing) {
+                context.beginPath();
+                context.moveTo(0, y);
+                context.lineTo(canvas.width, y);
+                context.stroke();
+            }
+
             canvas.addEventListener('mousedown', startDrawing);
             canvas.addEventListener('mousemove', draw);
             canvas.addEventListener('mouseup', stopDrawing);
