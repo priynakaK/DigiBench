@@ -48,4 +48,75 @@
             backgroundContext.strokeStyle = '#ccc'; // Line color
             for (var y = lineSpacing; y < backgroundCanvas.height; y += lineSpacing) {
                 backgroundContext.beginPath();
-                backgroundContext
+                backgroundContext.moveTo(0, y);
+                backgroundContext.lineTo(backgroundCanvas.width, y);
+                backgroundContext.stroke();
+            }
+
+            canvas.addEventListener('mousedown', startDrawing);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDrawing);
+            canvas.addEventListener('mouseleave', stopDrawing);
+
+            canvas.addEventListener('touchstart', function (e) {
+                startDrawing(e.touches[0]);
+                e.preventDefault();
+            });
+            canvas.addEventListener('touchmove', function (e) {
+                draw(e.touches[0]);
+                e.preventDefault();
+            });
+            canvas.addEventListener('touchend', stopDrawing);
+
+            function startDrawing(e) {
+                isDrawing = true;
+                var offsetX = e.clientX - canvas.getBoundingClientRect().left;
+                var offsetY = e.clientY - canvas.getBoundingClientRect().top;
+                if (penSelected) {
+                    context.beginPath();
+                    context.moveTo(offsetX, offsetY);
+                } else {
+                    erase(offsetX, offsetY);
+                }
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                var offsetX = e.clientX - canvas.getBoundingClientRect().left;
+                var offsetY = e.clientY - canvas.getBoundingClientRect().top;
+                if (penSelected) {
+                    context.lineTo(offsetX, offsetY);
+                    context.stroke();
+                } else {
+                    erase(offsetX, offsetY);
+                }
+            }
+
+            function stopDrawing() {
+                isDrawing = false;
+            }
+
+            function erase(x, y) {
+                var eraserSize = 20; // adjust eraser size as needed
+                context.clearRect(x - eraserSize / 2, y - eraserSize / 2, eraserSize, eraserSize);
+            }
+
+            window.selectPen = function () {
+                penSelected = true;
+            }
+
+            window.selectEraser = function () {
+                penSelected = false;
+            }
+
+            window.saveDrawing = function () {
+                var imgData = canvas.toDataURL('image/png');
+                var link = document.createElement('a');
+                link.download = 'whiteboard.png';
+                link.href = imgData;
+                link.click();
+            }
+        });
+    </script>
+</body>
+</html>
