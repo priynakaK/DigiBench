@@ -23,6 +23,10 @@
         left: 0;
         pointer-events: none; /* Make background canvas not receive mouse events */
     }
+
+    .button-container {
+        margin-top: 10px;
+    }
 </style>
 </head>
 <body>
@@ -30,9 +34,11 @@
         <canvas id="backgroundCanvas" width="800" height="600"></canvas>
         <canvas id="whiteboard" width="800" height="600"></canvas>
     </div>
-    <button onclick="selectPen()">Pen</button>
-    <button onclick="selectEraser()">Eraser</button>
-    <button onclick="saveDrawing()">Save</button>
+    <div class="button-container">
+        <button onclick="selectPen()">Pen</button>
+        <button onclick="selectEraser()">Eraser</button>
+        <button onclick="saveDrawing()">Save</button>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
