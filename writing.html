@@ -5,57 +5,81 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Whiteboard</title>
 <style>
+    #whiteboardContainer {
+        position: relative;
+    }
+
     #whiteboard {
+        position: absolute;
+        top: 0;
+        left: 0;
         border: 2px solid black;
         cursor: crosshair;
+    }
+
+    #backgroundCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none; /* Make background canvas not receive mouse events */
+    }
+
+    .button-container {
+        margin-top: 10px;
     }
 </style>
 </head>
 <body>
-    <canvas id="whiteboard" width="800" height="600"></canvas>
-    <button onclick="selectPen()">Pen</button>
-    <button onclick="selectEraser()">Eraser</button>
-    <button onclick="saveDrawing()">Save</button>
+    <div id="whiteboardContainer">
+        <canvas id="backgroundCanvas" width="800" height="600"></canvas>
+        <canvas id="penCanvas" width="800" height="600"></canvas>
+    </div>
+    <div class="button-container">
+        <button onclick="selectPen()">Pen</button>
+        <button onclick="selectEraser()">Eraser</button>
+        <button onclick="saveDrawing()">Save</button>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            var canvas = document.getElementById('whiteboard');
-            var context = canvas.getContext('2d');
+            var penCanvas = document.getElementById('penCanvas');
+            var penContext = penCanvas.getContext('2d');
             var isDrawing = false;
             var penSelected = true;
 
-            // Draw lined background
+            var backgroundCanvas = document.getElementById('backgroundCanvas');
+            var backgroundContext = backgroundCanvas.getContext('2d');
             var lineSpacing = 20;
-            context.strokeStyle = '#ccc'; // Line color
-            for (var y = lineSpacing; y < canvas.height; y += lineSpacing) {
-                context.beginPath();
-                context.moveTo(0, y);
-                context.lineTo(canvas.width, y);
-                context.stroke();
+            backgroundContext.strokeStyle = '#ccc'; // Line color
+            for (var y = lineSpacing; y < backgroundCanvas.height; y += lineSpacing) {
+                backgroundContext.beginPath();
+                backgroundContext.moveTo(0, y);
+                backgroundContext.lineTo(backgroundCanvas.width, y);
+                backgroundContext.stroke();
             }
 
-            canvas.addEventListener('mousedown', startDrawing);
-            canvas.addEventListener('mousemove', draw);
-            canvas.addEventListener('mouseup', stopDrawing);
-            canvas.addEventListener('mouseleave', stopDrawing);
+            penCanvas.addEventListener('mousedown', startDrawing);
+            penCanvas.addEventListener('mousemove', draw);
+            penCanvas.addEventListener('mouseup', stopDrawing);
+            penCanvas.addEventListener('mouseleave', stopDrawing);
 
-            canvas.addEventListener('touchstart', function (e) {
+            penCanvas.addEventListener('touchstart', function (e) {
                 startDrawing(e.touches[0]);
                 e.preventDefault();
             });
-            canvas.addEventListener('touchmove', function (e) {
+            penCanvas.addEventListener('touchmove', function (e) {
                 draw(e.touches[0]);
                 e.preventDefault();
             });
-            canvas.addEventListener('touchend', stopDrawing);
+            penCanvas.addEventListener('touchend', stopDrawing);
 
             function startDrawing(e) {
                 isDrawing = true;
-                var offsetX = e.clientX - canvas.getBoundingClientRect().left;
-                var offsetY = e.clientY - canvas.getBoundingClientRect().top;
+                var offsetX = e.clientX - penCanvas.getBoundingClientRect().left;
+                var offsetY = e.clientY - penCanvas.getBoundingClientRect().top;
                 if (penSelected) {
-                    context.beginPath();
-                    context.moveTo(offsetX, offsetY);
+                    penContext.beginPath();
+                    penContext.moveTo(offsetX, offsetY);
                 } else {
                     erase(offsetX, offsetY);
                 }
@@ -63,11 +87,11 @@
 
             function draw(e) {
                 if (!isDrawing) return;
-                var offsetX = e.clientX - canvas.getBoundingClientRect().left;
-                var offsetY = e.clientY - canvas.getBoundingClientRect().top;
+                var offsetX = e.clientX - penCanvas.getBoundingClientRect().left;
+                var offsetY = e.clientY - penCanvas.getBoundingClientRect().top;
                 if (penSelected) {
-                    context.lineTo(offsetX, offsetY);
-                    context.stroke();
+                    penContext.lineTo(offsetX, offsetY);
+                    penContext.stroke();
                 } else {
                     erase(offsetX, offsetY);
                 }
@@ -79,7 +103,7 @@
 
             function erase(x, y) {
                 var eraserSize = 20; // adjust eraser size as needed
-                context.clearRect(x - eraserSize / 2, y - eraserSize / 2, eraserSize, eraserSize);
+                penContext.clearRect(x - eraserSize / 2, y - eraserSize / 2, eraserSize, eraserSize);
             }
 
             window.selectPen = function () {
@@ -91,7 +115,7 @@
             }
 
             window.saveDrawing = function () {
-                var imgData = canvas.toDataURL('image/png');
+                var imgData = penCanvas.toDataURL('image/png');
                 var link = document.createElement('a');
                 link.download = 'whiteboard.png';
                 link.href = imgData;
